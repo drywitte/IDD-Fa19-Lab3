@@ -104,13 +104,23 @@ int read_encoder()
 
 **a. What voltage values do you see from your force sensor?**
 
+When no force is applied, there is 0 voltage displayed on the plotter.
+As I apply pressure the voltage will peak out at around 1000 (nearly 5V).
+
 **b. What kind of relationship does the voltage have as a function of the force applied? (e.g., linear?)**
+
+Force logarithmically decreases the resistance. This explains why it is difficult to reach a full 5V measurement when applying force to the resistor. 
 
 **c. Can you change the LED fading code values so that you get the full range of output voltages from the LED when using your FSR?**
 
+
 **d. What resistance do you need to have in series to get a reasonable range of voltages from each sensor?**
 
+
 **e. What kind of relationship does the resistance have as a function of stimulus? (e.g., linear?)**
+
+The relationship is logarithmic. As force increases resistance decreases, but in an increasingly less responsive manner. The relationship can be seen in the graph below from the adafruit website.
+![resistor graph](https://learn.adafruit.com/assets/429)
 
 ### 2. Accelerometer
  
