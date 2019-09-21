@@ -329,11 +329,19 @@ void setColor(int red, int green, int blue)
 
 **a. Does it matter what actions are assigned to which state? Why?**
 
+In this case, no. As long as you have finite controle over the voltage, you can determine which state the machine is in. However if there were a default voltage, e.g. using something like a FSP where the default voltage is very low, it may matter. If the action associated with low voltage was "clear EEPROM", then you may accidentally be deleting data as soon as the circuit is live.
+
 **b. Why is the code here all in the setup() functions and not in the loop() functions?**
+
+The compiler will fail if you have more than 1 loop function for a program. This is because Arduino is single threaded, also this likely avoids race conditions that may occur.
 
 **c. How many byte-sized data samples can you store on the Atmega328?**
 
+According to wikipedia the Atmega328 has 2KB EEPROM, so that would be 2000 byte sized data samples.
+
 **d. How would you get analog data from the Arduino analog pins to be byte-sized? How about analog data from the I2C devices?**
+
+
 
 **e. Alternately, how would we store the data if it were bigger than a byte? (hint: take a look at the [EEPROMPut](https://www.arduino.cc/en/Reference/EEPROMPut) example)**
 
