@@ -186,11 +186,16 @@ void loop() {
 
 **d. What resistance do you need to have in series to get a reasonable range of voltages from each sensor?**
 
+For the photosensitive resistor, a 10k resistor works. This achieves a range of voltages between ~200-1000. This was tested by covering the photosensitive cell vs shining a flash light directly on it. At lower resistances the voltages were much lower.
+
+For the softpot a 10k resistor on the 5V side and a 10k resistor on the ground side are required. This results in an output range of ~250-1000 that changes linearly.
 
 **e. What kind of relationship does the resistance have as a function of stimulus? (e.g., linear?)**
 
-The relationship is logarithmic. As a stimulus increases, resistance changes in an increasingly less responsive manner. The relationship can be seen in the graph below from the adafruit website.
+The relationship is logarithmic for the FSP and photosensitive resistor. As a stimulus increases, resistance changes in an increasingly less responsive manner. The relationship can be seen in the graph below from the adafruit website.
 ![resistor graph](force___flex_resistanceforce.jpg)
+
+For the softpot the resistance is linear, as you depress the wiper in different locations the resistance adjusts at a constant rate.
 
 ### 2. Accelerometer
  
