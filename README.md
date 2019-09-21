@@ -195,7 +195,7 @@ For the softpot a 10k resistor on the 5V side and a 10k resistor on the ground s
 The relationship is logarithmic for the FSP and photosensitive resistor. As a stimulus increases, resistance changes in an increasingly less responsive manner. The relationship can be seen in the graph below from the adafruit website.
 ![resistor graph](force___flex_resistanceforce.jpg)
 
-For the softpot the resistance is linear, as you depress the wiper in different locations the resistance adjusts at a constant rate.
+For the softpot and the flex sensor, the relationship between resistance and stimulus is linear. On the soft pot as you depress the wiper in different locations and on the flex sensor when you bend it additional degrees, the resistance adjusts at a constant rate.
 
 ### 2. Accelerometer
  
