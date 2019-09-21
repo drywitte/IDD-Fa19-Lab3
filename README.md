@@ -337,11 +337,13 @@ The compiler will fail if you have more than 1 loop function for a program. This
 
 **c. How many byte-sized data samples can you store on the Atmega328?**
 
-According to wikipedia the Atmega328 has 2KB EEPROM, so that would be 2000 byte sized data samples.
+According to wikipedia the Atmega328 has 1KB EEPROM, so that would be 1024 byte sized data samples.
 
 **d. How would you get analog data from the Arduino analog pins to be byte-sized? How about analog data from the I2C devices?**
 
+Since analogRead values are limited to 0-1023, we know it's max size is 10 bits. To convert analog data you could divide by 4 and drop the decimal, reducing the number of bits required to represent the number by 2. You would then have to multiply by 4 at the time of reading the data. This would result in slight loss of fidelity of the data, as you've compressed the information.
 
+For I2C the data is stored in 7bits, however the 8th bigt indicates whether it is read/write data, with the other bits shifted right. Therefore you can just ignore the first bit of a byte.
 
 **e. Alternately, how would we store the data if it were bigger than a byte? (hint: take a look at the [EEPROMPut](https://www.arduino.cc/en/Reference/EEPROMPut) example)**
 
