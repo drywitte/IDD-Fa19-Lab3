@@ -347,6 +347,8 @@ For I2C the data is stored in 7bits, however the 8th bigt indicates whether it i
 
 **e. Alternately, how would we store the data if it were bigger than a byte? (hint: take a look at the [EEPROMPut](https://www.arduino.cc/en/Reference/EEPROMPut) example)**
 
+Using EEPROM.put() and EEPROM.read() you can assign memory addresses for information and the Arduino will auotmatically calculate how many bytes are needed using eeeprom.put. You can then access those values through eeprom.get by passing in the start of the memory address for that information.
+
 **Upload your modified code that takes in analog values from your sensors and prints them back out to the Arduino Serial Monitor.**
 
 ### 2. Design your logger
