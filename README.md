@@ -194,6 +194,7 @@ The relationship is logarithmic. As force increases resistance decreases, but in
 ### 2. Accelerometer
  
 **a. Include your accelerometer read-out code in your write-up.**
+
 [Video](https://photos.app.goo.gl/xQASYmzAduK9FBqF7)
 
 ```
