@@ -189,7 +189,7 @@ void loop() {
 
 **e. What kind of relationship does the resistance have as a function of stimulus? (e.g., linear?)**
 
-The relationship is logarithmic. As force increases resistance decreases, but in an increasingly less responsive manner. The relationship can be seen in the graph below from the adafruit website.
+The relationship is logarithmic. As a stimulus increases, resistance changes in an increasingly less responsive manner. The relationship can be seen in the graph below from the adafruit website.
 ![resistor graph](force___flex_resistanceforce.jpg)
 
 ### 2. Accelerometer
