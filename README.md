@@ -13,6 +13,7 @@ For this lab, we will be experimenting with a variety of sensors, sending the da
 **a. Based on the readings from the serial monitor, what is the range of the analog values being read?**
 
 0-1023
+
 **b. How many bits of resolution does the analog to digital converter (ADC) on the Arduino have?**
 
 1024 = 2^10
@@ -115,8 +116,72 @@ As I apply pressure the voltage will peak out at around 1000 (nearly 5V).
 Force logarithmically decreases the resistance. This explains why it is difficult to reach a full 5V measurement when applying force to the resistor. 
 
 **c. Can you change the LED fading code values so that you get the full range of output voltages from the LED when using your FSR?**
+Adding the following the following code you can map an analog values over 0 to 255. Any analog read values above 255 will be capped. This will make it easier to hit the full range of output voltages.
+```
+int ledPin = 7;    // LED connected to digital pin 7
+const int sensorPin = A0;    // pin that the sensor is attached to
+
+// variables:
+int sensorValue = 0;         // the sensor value
+int sensorMin = 1023;        // minimum sensor value
+int sensorMax = 0;   
+
+void setup() {
+    // read the sensor:
+  sensorValue = analogRead(sensorPin);
+
+  // apply the calibration to the sensor reading
+  sensorValue = map(sensorValue, sensorMin, sensorMax, 0, 255);
+
+  // in case the sensor value is outside the range seen during calibration
+  sensorValue = constrain(sensorValue, 0, 255);
+
+  // fade the LED using the calibrated value:
+  analogWrite(ledPin, sensorValue);
+}
+
+void loop() {
+
+    // read the sensor:
+  sensorValue = analogRead(sensorPin);
+
+  // apply the calibration to the sensor reading
+  sensorValue = map(sensorValue, sensorMin, sensorMax, 0, 255);
+
+  // in case the sensor value is outside the range seen during calibration
+  sensorValue = constrain(sensorValue, 0, 255);
 
 
+  // fade in from min to max in increments of 5 points:
+  for (int fadeValue = 0 ; fadeValue <= sensorValue; fadeValue += 5) {
+    // sets the value (range from 0 to 255):
+      analogWrite(ledPin, sensorValue);
+    // wait for 30 milliseconds to see the dimming effect
+    delay(30);
+  }
+
+  // fade out from max to min in increments of 5 points:
+  for (int fadeValue = sensorValue ; fadeValue >= 0; fadeValue -= 5) {
+    // sets the value (range from 0 to 255):
+    analogWrite(ledPin, fadeValue);
+    // wait for 30 milliseconds to see the dimming effect
+    delay(30);
+  }
+}
+  void loop() {
+  // read the sensor:
+  sensorValue = analogRead(sensorPin);
+
+  // apply the calibration to the sensor reading
+  sensorValue = map(sensorValue, sensorMin, sensorMax, 0, 255);
+
+  // in case the sensor value is outside the range seen during calibration
+  sensorValue = constrain(sensorValue, 0, 255);
+
+  // fade the LED using the calibrated value:
+  analogWrite(ledPin, sensorValue);
+}
+```
 
 **d. What resistance do you need to have in series to get a reasonable range of voltages from each sensor?**
 
