@@ -117,6 +117,7 @@ As I apply pressure the voltage will peak out at around 1000 (nearly 5V).
 Force logarithmically decreases the resistance. This explains why it is difficult to reach a full 5V measurement when applying force to the resistor. 
 
 **c. Can you change the LED fading code values so that you get the full range of output voltages from the LED when using your FSR?**
+
 Adding the following the following code you can map an analog values over 0 to 255. Any analog read values above 255 will be capped. This will make it easier to hit the full range of output voltages.
 ```
 int ledPin = 7;    // LED connected to digital pin 7
@@ -322,6 +323,9 @@ void setColor(int red, int green, int blue)
 ## Optional. Graphic Display
 
 **Take a picture of your screen working insert it here!**
+
+[Graphic Display Video](https://photos.app.goo.gl/n7xU8uERtzfADfBZ6)
+
 ```
 
 #include <SPI.h>
