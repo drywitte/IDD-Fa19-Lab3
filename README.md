@@ -417,6 +417,13 @@ Using EEPROM.put() and EEPROM.read() you can assign memory addresses for informa
 
 **Upload your modified code that takes in analog values from your sensors and prints them back out to the Arduino Serial Monitor.**
 
+To print store & print values to/from eeprom, I added the following code to the loop:
+```
+EEPROM.put(eeAdd, analogRead(sensorPin));
+  Serial.println(EEPROM.get(eeAdd, x));
+  // map the pot range to number of states :
+```
+
 ### 2. Design your logger
  
 **a. Insert here a copy of your final state diagram.**
