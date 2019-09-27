@@ -407,6 +407,8 @@ EEPROM.put(eeAdd, analogRead(sensorPin));
  
 **a. Insert here a copy of your final state diagram.**
 
+!(State Diagram)[eeprom_state_diagram.png]
+
 ### 3. Create your data logger!
  
 **a. Record and upload a short demo video of your logger in action.**
