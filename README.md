@@ -392,7 +392,7 @@ For I2C the data is stored in 7bits, however the 8th bigt indicates whether it i
 
 **e. Alternately, how would we store the data if it were bigger than a byte? (hint: take a look at the [EEPROMPut](https://www.arduino.cc/en/Reference/EEPROMPut) example)**
 
-Using EEPROM.put() and EEPROM.read() you can assign memory addresses for information and the Arduino will auotmatically calculate how many bytes are needed using eeeprom.put. You can then access those values through eeprom.get by passing in the start of the memory address for that information.
+Using EEPROM.put() and EEPROM.get() you can assign memory addresses for information and the Arduino will auotmatically calculate how many bytes are needed using eeeprom.put. You can then access those values through eeprom.get by passing in the start of the memory address for that information. If storing more info it helps to add the size of the stored object to your eeaddress variable to keep track of what eeprom is unused.
 
 **Upload your modified code that takes in analog values from your sensors and prints them back out to the Arduino Serial Monitor.**
 
@@ -410,3 +410,185 @@ EEPROM.put(eeAdd, analogRead(sensorPin));
 ### 3. Create your data logger!
  
 **a. Record and upload a short demo video of your logger in action.**
+
+```
+// Basic demo for accelerometer readings from Adafruit LIS3DH
+
+#include <Wire.h>
+#include <SPI.h>
+#include <Adafruit_LIS3DH.h>
+//#include <Adafruit_Sensor.h>
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <EEPROM.h>
+
+// Used for software SPI
+#define LIS3DH_CLK 13
+#define LIS3DH_MISO 12
+#define LIS3DH_MOSI 11
+// Used for hardware & software SPI
+#define LIS3DH_CS 10
+
+// I2C
+Adafruit_LIS3DH lis = Adafruit_LIS3DH();
+
+// screen setup
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+//Wire.beginOnPins(A2, A1);
+
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 32 // OLED display height, in pixels
+
+// Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
+#define OLED_RESET     4 // Reset pin # (or -1 if sharing Arduino reset pin)
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+int readIndex = 0;
+int writeIndex = 0;
+int eeAddresses [100];
+
+// track accelerations
+float lastZ = 0;
+float lastX = 0;
+float lastY = 0;
+int lastRecorded;
+int lastRead;
+String state;
+
+struct accelData {
+  char axis;
+  float accel;
+};
+
+void setup(void) {
+  //   clear eeprom
+  for (int i = 0 ; i < EEPROM.length() ; i++) {
+    EEPROM.write(i, 0);
+  }
+
+  state = "record";
+  lastRecorded = millis();
+  lastRead = millis();
+#ifndef ESP8266
+  while (!Serial);     // will pause Zero, Leonardo, etc until serial console opens
+#endif
+
+  Serial.begin(9600);
+  Serial.println("LIS3DH test!");
+
+  if (! lis.begin(0x18)) {   // change this to 0x19 for alternative i2c address
+    Serial.println("Couldnt start");
+    while (1);
+  }
+  Serial.println("LIS3DH found!");
+  // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3C for 128x32
+    Serial.println(F("SSD1306 allocation failed"));
+    for (;;); // Don't proceed, loop forever
+  }
+
+  // Clear the buffer
+  display.clearDisplay();
+  display.setTextSize(2);             // Normal 1:1 pixel scale
+  display.setTextColor(WHITE);        // Draw white text
+  display.setCursor(1, 0);            // Start at top-left corner
+  display.print("Starting to read");
+  display.display();
+  delay(1000);
+}
+
+void loop() {
+  if (analogRead(A0) > 500) {
+    if (state == "record") {
+      state = "read";
+    }
+    else if (state == "read") {
+      state = "record";
+    }
+    display.clearDisplay();
+    display.setCursor(1, 0);
+    display.print("State: \n" + state);
+    display.display();
+    delay(1000);
+  }
+
+  if (state == "record" && millis() - lastRecorded > 1000) {
+    accelData data;
+    lis.read();      // get X Y and Z data at once
+    /* Or....get a new sensor event, normalized */
+    sensors_event_t event;
+    lis.getEvent(&event);
+    float diffZ = abs(event.acceleration.z - lastZ);
+    float diffY = abs(event.acceleration.y - lastY);
+    float diffX = abs(event.acceleration.x - lastX);
+
+    display.clearDisplay();
+    display.setCursor(1, 0);
+    display.display();
+
+    if (diffZ > diffX & diffZ > diffY) {
+      data = {char("Z"), diffZ};
+      display.print("Z: " + String(diffZ));
+      display.display();
+    }
+
+    if (diffY > diffX & diffY > diffZ) {
+      data = {char("Y"), diffY};
+      display.print("Y: " + String(diffY));
+      display.display();
+    }
+    if (diffX > diffZ & diffX > diffY) {
+      accelData data = {char("X"), diffX};
+      display.print("X: " + String(diffX));
+      display.display();
+    }
+    lastZ = event.acceleration.z;
+    lastY = event.acceleration.y;
+    lastX = event.acceleration.x;
+    lastRecorded = millis();
+
+    if (writeIndex == 0) {
+      eeAddresses[writeIndex] = 0;
+    }
+//    else {
+//      accelData test;
+//      EEPROM.get(eeAddresses[0], test);
+//      delay(100);
+//      Serial.println("eeadd[0] is " + String(eeAddresses[0]));
+//      Serial.println("eedata " + String(test.axis) + " " + String(test.accel));
+//    }
+    EEPROM.put(eeAddresses[writeIndex], data);
+    writeIndex++;
+    readIndex = writeIndex;
+    eeAddresses[writeIndex] = eeAddresses[writeIndex - 1] + sizeof(data);
+    Serial.println("eeaddress " + String(eeAddresses[writeIndex]));;
+  }
+
+  if (state == "read" && millis() - lastRead > 1000) {
+    accelData data;
+    if (readIndex > 1) {
+      EEPROM.get(eeAddresses[readIndex - 1], data);
+      display.clearDisplay();
+      display.setCursor(1, 0);
+      display.print(String(data.axis) + ": " + String(data.accel));
+      display.display();
+      lastRead = millis();
+      Serial.println("reading data: " + String(data.accel));
+      readIndex--;
+    }
+    else {
+      display.clearDisplay();
+      display.setCursor(1, 0);
+      display.print("At end of memory");
+      display.display();
+    }
+  }
+  Serial.println("Read address: " + String(eeAddresses[readIndex]));
+  Serial.println(" & Write address: " + String(eeAddresses[writeIndex]));
+}
+```
