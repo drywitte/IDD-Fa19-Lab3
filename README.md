@@ -414,6 +414,7 @@ EEPROM.put(eeAdd, analogRead(sensorPin));
 **a. Record and upload a short demo video of your logger in action.**
 
 In the write state this logger reads in data from the accelerometer every 1 second. It then compares this data to the most recent accelerometer readings, finds the most signficant acceleration difference, and stores this value and axis in eeprom. When the button is pressed it detecets the voltage change and switches to the read stage. Here it reads one eeprom data address per second, in LIFO order. When the eeprom address hits 0, it will inform the user it has reached the end of memory. The device can switch back to write mode when the button is pressed again.
+
 [EEPROM State Machine Video](https://photos.app.goo.gl/joCfyZKwZcusPcgN8)
 
 ```
