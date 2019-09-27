@@ -413,6 +413,8 @@ EEPROM.put(eeAdd, analogRead(sensorPin));
  
 **a. Record and upload a short demo video of your logger in action.**
 
+[EEPROM State Machine Video](https://photos.app.goo.gl/joCfyZKwZcusPcgN8)
+
 ```
 // Basic demo for accelerometer readings from Adafruit LIS3DH
 
